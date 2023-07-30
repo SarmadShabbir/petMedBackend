@@ -2,7 +2,11 @@ const {
   registerDoctor,
   authenticateDoctor,
   updateDoctor,
-  updatePassword
+  updatePassword,
+  fetchAllDoctors,
+  getADoctor,
+  addSlot,
+  getSlots,
 } = require('../controllers/doctorController');
 const express = require('express');
 const router = express.Router();
@@ -21,4 +25,19 @@ router.put('/updateDoctor', updateDoctor);
 
 router.put('/updatePassword', updatePassword);
 
+//get All Doctors
+
+router.get('/fetchAllDoctors', fetchAllDoctors);
+router.get('/fetchAllDoctors', fetchAllDoctors);
+
+//get All Doctors
+
+router.get('/:specialization', getADoctor);
+
+// add slots
+
+router.post('/addSlot', addSlot);
+
+// get slots
+router.get('/getSlots', getSlots);
 module.exports = router;

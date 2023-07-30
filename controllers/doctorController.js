@@ -1,4 +1,5 @@
 const Doctor = require('../models/Doctor');
+const Slots = require('../models/Slots');
 
 exports.registerDoctor = async (req, res) => {
   const { email } = req.body;
@@ -119,6 +120,100 @@ exports.updatePassword = async (req, res) => {
     return res.json({
       status: 'FAILURE',
       message_en: 'Previous password is incorrect',
+    });
+  }
+};
+
+// fetch all doctors
+
+exports.fetchAllDoctors = async (req, res) => {
+  const doctors = await Doctor.find({});
+  try {
+    if (doctors) {
+      return res.json({
+        status: 'SUCCESS',
+        doctors,
+      });
+    }
+  } catch (error) {
+    return res.json({
+      status: 'FAILURE',
+      message_en: 'There is some error while processing your request',
+      error: error.message,
+    });
+  }
+};
+
+// converting parameter
+function convertToNormalCase(camelOrPascalCase) {
+  return camelOrPascalCase
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before each uppercase letter
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // Add space between consecutive uppercase letters followed by lowercase letters
+    .split(/\s+/) // Split the string by spaces
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word and convert the rest to lowercase
+    .join(' '); // Join the words with spaces
+}
+
+// fetch a single doctor
+
+exports.getADoctor = async (req, res) => {
+  const specialization = req.params.specialization;
+  const parsedSpecialization = convertToNormalCase(specialization);
+
+  const doctor = await Doctor.find({ specialization: parsedSpecialization });
+  try {
+    if (doctor) {
+      return res.json({
+        status: 'SUCCESS',
+        doctor,
+      });
+    }
+  } catch (error) {
+    return res.json({
+      status: 'FAILURE',
+      message_en: 'There is some error while processing your request',
+      error: error.message,
+    });
+  }
+};
+
+// add slots
+exports.addSlot = async (req, res) => {
+  const slots = new Slots(req.body);
+
+  slots
+    .save()
+    .then(() => {
+      return res.json({
+        status: 'SUCCESS',
+        message_en: 'Slot Added successfully',
+        slots,
+      });
+    })
+    .catch((err) => {
+      return res.json({
+        status: 'FAILURE',
+        message_en: 'There is some error while processing your request',
+        error: err.message,
+      });
+    });
+};
+
+// get slots
+
+exports.getSlots = async (req, res) => {
+  try {
+    const getSlots = await Slots.find({});
+    console.log('hello')
+    res.json({
+      status: 'SUCCESS',
+      getSlots,
+    });
+  } catch (error) {
+    res.json({
+      status: 'FAILURE',
+      message_en: 'There is some error while processing your request',
+      error: error.message,
     });
   }
 };

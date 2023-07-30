@@ -16,4 +16,5 @@ routes.post('/upload', uploadFile);
 
 // admin
 routes.use('/admin', AdminRoutes)
+
 module.exports = routes;
