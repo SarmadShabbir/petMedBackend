@@ -127,8 +127,8 @@ exports.updatePassword = async (req, res) => {
 // fetch all doctors
 
 exports.fetchAllDoctors = async (req, res) => {
-  const doctors = await Doctor.find({});
   try {
+    const doctors = await Doctor.find();
     if (doctors) {
       return res.json({
         status: 'SUCCESS',
@@ -159,9 +159,8 @@ function convertToNormalCase(camelOrPascalCase) {
 exports.getADoctor = async (req, res) => {
   const specialization = req.params.specialization;
   const parsedSpecialization = convertToNormalCase(specialization);
-
-  const doctor = await Doctor.find({ specialization: parsedSpecialization });
   try {
+    const doctor = await Doctor.find({ specialization: parsedSpecialization });
     if (doctor) {
       return res.json({
         status: 'SUCCESS',
@@ -203,12 +202,13 @@ exports.addSlot = async (req, res) => {
 
 exports.getSlots = async (req, res) => {
   try {
-    const getSlots = await Slots.find({});
-    console.log('hello')
-    res.json({
-      status: 'SUCCESS',
-      getSlots,
-    });
+    const getSlots = await Slots.find();
+    if (getSlots) {
+      res.json({
+        status: 'SUCCESS',
+        getSlots
+      });
+    }
   } catch (error) {
     res.json({
       status: 'FAILURE',

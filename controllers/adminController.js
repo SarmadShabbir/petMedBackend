@@ -1,11 +1,11 @@
 const Labs = require('../models/Labs');
 const Blogs = require('../models/Blogs');
-const Complaints = require('../models/Complaints')
+const Complaints = require('../models/Complaints');
 
 // get complaints
 exports.getAllComplaints = async (req, res) => {
-  const complaints = await Complaints.find({});
   try {
+    const complaints = await Complaints.find({});
     if (complaints) {
       return res.json({
         status: 'SUCCESS',
@@ -20,7 +20,6 @@ exports.getAllComplaints = async (req, res) => {
     });
   }
 };
-
 
 // add lab
 
@@ -47,8 +46,8 @@ exports.addLab = (req, res) => {
 // get all labs
 
 exports.getAllLabs = async (req, res) => {
-  const labs = await Labs.find({});
   try {
+    const labs = await Labs.find({});
     if (labs) {
       return res.json({
         status: 'SUCCESS',
@@ -68,10 +67,9 @@ exports.getAllLabs = async (req, res) => {
 
 exports.deleteLab = async (req, res) => {
   const id = req.params.id;
-
-  const deleteLab = await Labs.findByIdAndDelete(id);
-
   try {
+    const deleteLab = await Labs.findByIdAndDelete(id);
+
     if (deleteLab) {
       return res.json({
         status: 'SUCCESS',
@@ -112,8 +110,8 @@ exports.addBlog = (req, res) => {
 // get all labs
 
 exports.getAllBlogs = async (req, res) => {
-  const blogs = await Blogs.find({});
   try {
+    const blogs = await Blogs.find({});
     if (blogs) {
       return res.json({
         status: 'SUCCESS',
@@ -132,9 +130,8 @@ exports.getAllBlogs = async (req, res) => {
 exports.deleteBlog = async (req, res) => {
   const id = req.params.id;
 
-  const deleteBlog = await Blogs.findByIdAndDelete(id);
-
   try {
+    const deleteBlog = await Blogs.findByIdAndDelete(id);
     if (deleteBlog) {
       return res.json({
         status: 'SUCCESS',

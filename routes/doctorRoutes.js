@@ -19,25 +19,26 @@ router.post('/authenticateDoctor', authenticateDoctor);
 
 //update Doctor
 
-router.put('/updateDoctor', updateDoctor);
+router.patch('/updateDoctor', updateDoctor);
 
 //update Password
 
-router.put('/updatePassword', updatePassword);
+router.patch('/updatePassword', updatePassword);
 
 //get All Doctors
 
 router.get('/fetchAllDoctors', fetchAllDoctors);
-router.get('/fetchAllDoctors', fetchAllDoctors);
 
-//get All Doctors
+// //get A Doctors
 
-router.get('/:specialization', getADoctor);
+router.get('/fetchAllDoctorsBySpecialization/:specialization', getADoctor);
 
 // add slots
 
 router.post('/addSlot', addSlot);
 
 // get slots
+
 router.get('/getSlots', getSlots);
+
 module.exports = router;
