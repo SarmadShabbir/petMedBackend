@@ -1,5 +1,5 @@
-const Doctor = require('../models/Doctor');
-const Slots = require('../models/Slots');
+const Doctor = require("../models/Doctor");
+const Slots = require("../models/Slots");
 
 exports.registerDoctor = async (req, res) => {
   const { email } = req.body;
@@ -7,23 +7,23 @@ exports.registerDoctor = async (req, res) => {
     const doctor = await Doctor.findOne({ email: email });
     if (doctor) {
       return res.json({
-        status: 'FAILURE',
-        message_en: 'Doctor with this email already exists',
+        status: "FAILURE",
+        message_en: "Doctor with this email already exists",
       });
     } else {
       const newDoctor = new Doctor(req.body);
       newDoctor.save().then(() => {
         return res.json({
-          status: 'SUCCESS',
-          message_en: 'Signed up successfully',
+          status: "SUCCESS",
+          message_en: "Signed up successfully",
           data: newDoctor,
         });
       });
     }
   } catch (error) {
     return res.json({
-      status: 'FAILURE',
-      message_en: 'There is some error while processing your request',
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
       error: error.message,
     });
   }
@@ -35,25 +35,25 @@ exports.authenticateDoctor = async (req, res) => {
     const doctor = await Doctor.findOne({ email: email });
     if (!doctor) {
       return res.json({
-        status: 'FAILURE',
-        message_en: 'User with this email does not exist',
+        status: "FAILURE",
+        message_en: "User with this email does not exist",
       });
     } else if (doctor && doctor.password === password) {
       return res.json({
-        status: 'SUCCESS',
-        message_en: 'Signed In',
+        status: "SUCCESS",
+        message_en: "Signed In",
         data: doctor,
       });
     } else {
       return res.json({
-        status: 'FAILURE',
-        message_en: 'Incorrect Password',
+        status: "FAILURE",
+        message_en: "Incorrect Password",
       });
     }
   } catch (error) {
     return res.json({
-      status: 'FAILURE',
-      message_en: 'There is some error while processing your request',
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
       error: error.message,
     });
   }
@@ -77,20 +77,20 @@ exports.updateDoctor = async (req, res) => {
 
     if (updateDoctor) {
       return res.json({
-        status: 'SUCCESS',
-        message_en: 'Contact Information Updated Successfully!',
+        status: "SUCCESS",
+        message_en: "Contact Information Updated Successfully!",
         data: updateDoctor,
       });
     } else {
       return res.json({
-        status: 'FAILURE',
-        message_en: 'Doctor not found with the provided email',
+        status: "FAILURE",
+        message_en: "Doctor not found with the provided email",
       });
     }
   } catch (error) {
     return res.json({
-      status: 'FAILURE',
-      message_en: 'There is some error while processing your request',
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
       error: error.message,
     });
   }
@@ -105,21 +105,21 @@ exports.updatePassword = async (req, res) => {
     Doctor.updateOne({ password: currentPassword })
       .then(() => {
         return res.json({
-          status: 'SUCCESS',
-          message_en: 'Password has been updated!',
+          status: "SUCCESS",
+          message_en: "Password has been updated!",
         });
       })
       .catch((error) => {
         return res.json({
-          status: 'FAILURE',
-          message_en: 'There is some error while processing your request',
+          status: "FAILURE",
+          message_en: "There is some error while processing your request",
           error: error.message,
         });
       });
   } else {
     return res.json({
-      status: 'FAILURE',
-      message_en: 'Previous password is incorrect',
+      status: "FAILURE",
+      message_en: "Previous password is incorrect",
     });
   }
 };
@@ -131,14 +131,14 @@ exports.fetchAllDoctors = async (req, res) => {
     const doctors = await Doctor.find();
     if (doctors) {
       return res.json({
-        status: 'SUCCESS',
+        status: "SUCCESS",
         doctors,
       });
     }
   } catch (error) {
     return res.json({
-      status: 'FAILURE',
-      message_en: 'There is some error while processing your request',
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
       error: error.message,
     });
   }
@@ -147,11 +147,11 @@ exports.fetchAllDoctors = async (req, res) => {
 // converting parameter
 function convertToNormalCase(camelOrPascalCase) {
   return camelOrPascalCase
-    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before each uppercase letter
-    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2') // Add space between consecutive uppercase letters followed by lowercase letters
+    .replace(/([a-z])([A-Z])/g, "$1 $2") // Add space before each uppercase letter
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2") // Add space between consecutive uppercase letters followed by lowercase letters
     .split(/\s+/) // Split the string by spaces
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word and convert the rest to lowercase
-    .join(' '); // Join the words with spaces
+    .join(" "); // Join the words with spaces
 }
 
 // fetch a single doctor
@@ -163,14 +163,14 @@ exports.getADoctor = async (req, res) => {
     const doctor = await Doctor.find({ specialization: parsedSpecialization });
     if (doctor) {
       return res.json({
-        status: 'SUCCESS',
+        status: "SUCCESS",
         doctor,
       });
     }
   } catch (error) {
     return res.json({
-      status: 'FAILURE',
-      message_en: 'There is some error while processing your request',
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
       error: error.message,
     });
   }
@@ -178,25 +178,46 @@ exports.getADoctor = async (req, res) => {
 
 // add slots
 exports.addSlot = async (req, res) => {
-  const slots = new Slots(req.body);
+  const { doctorId, to, from, slotDate } = req.body;
 
-  slots
-    .save()
-    .then(() => {
+  try {
+    const foundSlot = await Slots.findOne({ doctorId: doctorId, slotDate: slotDate });
+    
+    if (foundSlot) {
+      if (foundSlot.to === to || foundSlot.from === from) {
+        return res.json({
+          status: "FAILURE",
+          message_en: "Slot Already exists",
+        });
+      } else {
+        const slots = new Slots(req.body);
+        await slots.save();
+
+        return res.json({
+          status: "SUCCESS",
+          message_en: "Slot Added successfully",
+          slots,
+        });
+      }
+    } else {
+      const slots = new Slots(req.body);
+      await slots.save();
+
       return res.json({
-        status: 'SUCCESS',
-        message_en: 'Slot Added successfully',
+        status: "SUCCESS",
+        message_en: "Slot Added successfully",
         slots,
       });
-    })
-    .catch((err) => {
-      return res.json({
-        status: 'FAILURE',
-        message_en: 'There is some error while processing your request',
-        error: err.message,
-      });
+    }
+  } catch (err) {
+    return res.json({
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
+      error: err.message,
     });
+  }
 };
+
 
 // get slots
 
@@ -205,14 +226,14 @@ exports.getSlots = async (req, res) => {
     const getSlots = await Slots.find();
     if (getSlots) {
       res.json({
-        status: 'SUCCESS',
-        getSlots
+        status: "SUCCESS",
+        getSlots,
       });
     }
   } catch (error) {
     res.json({
-      status: 'FAILURE',
-      message_en: 'There is some error while processing your request',
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
       error: error.message,
     });
   }
