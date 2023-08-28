@@ -1,3 +1,4 @@
+const AppointmentInfo = require("../models/AppointmentInfo");
 const Doctor = require("../models/Doctor");
 const Slots = require("../models/Slots");
 
@@ -181,8 +182,11 @@ exports.addSlot = async (req, res) => {
   const { doctorId, to, from, slotDate } = req.body;
 
   try {
-    const foundSlot = await Slots.findOne({ doctorId: doctorId, slotDate: slotDate });
-    
+    const foundSlot = await Slots.findOne({
+      doctorId: doctorId,
+      slotDate: slotDate,
+    });
+
     if (foundSlot) {
       if (foundSlot.to === to || foundSlot.from === from) {
         return res.json({
@@ -218,7 +222,6 @@ exports.addSlot = async (req, res) => {
   }
 };
 
-
 // get slots
 
 exports.getSlots = async (req, res) => {
@@ -232,6 +235,104 @@ exports.getSlots = async (req, res) => {
     }
   } catch (error) {
     res.json({
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
+      error: error.message,
+    });
+  }
+};
+
+// get slots
+
+exports.getDoctorSlots = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const slots = await Slots.find({ doctorId: doctorId });
+
+    return res.json({
+      status: "SUCCESS",
+      slots,
+    });
+  } catch (error) {
+    res.json({
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
+      error: error.message,
+    });
+  }
+};
+
+// delete a slot
+
+exports.deleteSlot = async (req, res) => {
+  const { _id } = req.body;
+  try {
+    const deleteSlot = await Slots.findOneAndDelete({ _id: _id });
+    if (deleteSlot) {
+      return res.json({
+        status: "SUCCESS",
+        message_en: "Slot Deleted successfully",
+      });
+    }
+  } catch (error) {
+    return res.json({
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
+      error: error.message,
+    });
+  }
+};
+
+// fetch all the appointments
+exports.fetchAppointments = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const appointments = await AppointmentInfo.find({ doctorId: doctorId });
+    return res.json({
+      status: "SUCCESS",
+      message_en: "Appointments Fetched successfully",
+      appointments,
+    });
+  } catch (error) {
+    return res.json({
+      status: "FAILURE",
+      message_en: "There is some error while processing your request",
+      error: error.message,
+    });
+  }
+};
+
+// updating status
+
+exports.updateStatus = async (req, res) => {  try {
+    const {
+      newStatus,
+      basicGroming,
+      medicines,
+      charges,
+      appointmentId,
+      doctorImage,
+      doctorName,
+    } = req.body;
+
+    const response = await AppointmentInfo.findOneAndUpdate(
+      { _id: appointmentId },
+      {
+        basicGroming,
+        medicines,
+        charges,
+        appointmentStatus: newStatus,
+        doctorImage,
+        doctorName,
+      }
+    );
+    return res.json({
+      status: "SUCCESS",
+      message_en: "Appointment Status Updated Successfully!",
+      response,
+    });
+  } catch (error) {
+    return res.json({
       status: "FAILURE",
       message_en: "There is some error while processing your request",
       error: error.message,

@@ -7,6 +7,10 @@ const {
   getADoctor,
   addSlot,
   getSlots,
+  getDoctorSlots,
+  deleteSlot,
+  fetchAppointments,
+  updateStatus
 } = require('../controllers/doctorController');
 const express = require('express');
 const router = express.Router();
@@ -40,5 +44,18 @@ router.post('/addSlot', addSlot);
 // get slots
 
 router.get('/getSlots', getSlots);
+
+//get doctorSlots
+router.get('/fetch/getDoctorSlots/:doctorId', getDoctorSlots)
+
+//delete slot
+
+router.delete('/deleteSlot', deleteSlot);
+
+// fetch appointments 
+router.get('/fetch/allAppointments/:doctorId', fetchAppointments);
+
+// update status
+router.put('/updateStatus', updateStatus);
 
 module.exports = router;

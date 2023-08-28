@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   addLab,
@@ -7,33 +7,44 @@ const {
   addBlog,
   getAllBlogs,
   deleteBlog,
-  getAllComplaints
-} = require('../controllers/adminController');
+  getAllComplaints,
+  fetchAllAppointments,
+  getDoctors,
+  registerAdmin,
+  authenticateAdmin,
+} = require("../controllers/adminController");
 
 // get complaints
-
-router.get('/getAllComplaints', getAllComplaints);
-
-// add lab
-router.post('/addLab', addLab);
-
-// get labs
-
-router.get('/getLabs', getAllLabs);
-
-// delete labs
-
-router.delete('/deleteLab/:id', deleteLab);
+router.get("/getAllComplaints", getAllComplaints);
 
 // add lab
-router.post('/addBlog', addBlog);
+router.post("/addLab", addLab);
 
 // get labs
-
-router.get('/getAllBlogs', getAllBlogs);
+router.get("/getLabs", getAllLabs);
 
 // delete labs
+router.delete("/deleteLab/:id", deleteLab);
 
-router.delete('/deleteBlog/:id', deleteBlog);
+// add Blog
+router.post("/addBlog", addBlog);
+
+// get labs
+router.get("/getAllBlogs", getAllBlogs);
+
+// delete labs
+router.delete("/deleteBlog/:id", deleteBlog);
+
+// get labs
+router.get("/fetchAllAppointments", fetchAllAppointments);
+
+// get labs
+router.get("/getDoctors", getDoctors);
+
+// get labs
+router.post("/registerAdmin", registerAdmin);
+
+// get labs
+router.post("/authenticateAdmin", authenticateAdmin);
 
 module.exports = router;
